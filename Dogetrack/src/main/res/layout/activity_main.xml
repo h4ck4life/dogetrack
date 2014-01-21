@@ -2,7 +2,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#1c1c1c"
     android:padding="8dp">
 
     <TextView
@@ -11,8 +10,7 @@
         android:text="@string/amount"
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:textColor="#ffffff" />
+        android:layout_alignParentLeft="true" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -20,18 +18,24 @@
         android:inputType="numberDecimal"
         android:ems="10"
         android:id="@+id/etAmount"
-        android:layout_below="@+id/textView"
         android:layout_alignParentLeft="true"
+        android:padding="8dp"
+        android:layout_below="@+id/textView" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spCurrency"
         android:layout_alignParentRight="true"
-        android:textColor="#ffffff"
-        android:background="#2a2a2a"
-        android:padding="8dp" />
+        android:layout_toRightOf="@+id/etAmount"
+        android:spinnerMode="dropdown" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:id="@+id/relativeLayout">
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,7 +43,6 @@
             android:id="@+id/tvValue"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:textColor="#ffffff"
             android:textSize="50sp"
             android:text=""
             android:textIsSelectable="true" />
@@ -49,7 +52,6 @@
             android:layout_height="wrap_content"
             android:text=""
             android:id="@+id/tvSatoshis"
-            android:textColor="#ffffff"
             android:layout_below="@+id/tvValue"
             android:layout_centerHorizontal="true" />
 
@@ -71,7 +73,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:textColor="#ffffff"
         android:padding="8dp" />
 
 </RelativeLayout>

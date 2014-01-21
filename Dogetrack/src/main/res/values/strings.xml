@@ -4,6 +4,12 @@
     <string name="app_name">DogeTrack</string>
     <string name="amount">Doge Amount</string>
     <string name="update">Update</string>
-    <string name="satoshis"> satoshis each</string>
+    <string name="satoshis">satoshis each</string>
+
+    <string-array name="currencies">
+        <item>USD</item>
+        <item>GBP</item>
+        <item>EUR</item>
+    </string-array>
 
 </resources>

@@ -5,9 +5,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,9 +21,12 @@ public class MainActivity extends Activity {
     public static final String PREFS_NAME = "DogeTrackPrefs";
     private final String ApiUrl = "http://dogecoin.jebem.eu/api/index.php/rates?amount=";
     private EditText etAmount;
-    public TextView tvValue, tvSatoshis;
+    private TextView tvValue, tvSatoshis;
+    private Spinner spCurrency;
     private Button bUpdate;
     private ProgressBar pbWorking;
+
+    private static String[] CurrencySymbols = {"$", "£", "€"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +36,19 @@ public class MainActivity extends Activity {
         etAmount = (EditText) findViewById(R.id.etAmount);
         tvValue = (TextView) findViewById(R.id.tvValue);
         tvSatoshis = (TextView) findViewById(R.id.tvSatoshis);
+        spCurrency = (Spinner) findViewById(R.id.spCurrency);
         pbWorking = (ProgressBar) findViewById(R.id.pbWorking);
+
+        // Setup currency spinner
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.currencies, android.R.layout.simple_spinner_dropdown_item);
+        spCurrency.setAdapter(adapter);
 
         // Restore previously saved doge amount
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         String amount = settings.getString("DogeAmount", "0");
+        int currency = settings.getInt("Currency", 0);
         etAmount.setText(amount);
+        spCurrency.setSelection(currency);
 
         updateValue();
 
@@ -52,18 +64,13 @@ public class MainActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-
-        // Save current doge value
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("DogeAmount", etAmount.getText().toString());
-        editor.commit();
+        savePrefs();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        updateValue();
+    protected void onPause() {
+        super.onPause();
+        savePrefs();
     }
 
     private void updateValue() {
@@ -72,6 +79,14 @@ public class MainActivity extends Activity {
         } catch (Exception ex) {
             Toast.makeText(getApplicationContext(), ex.toString(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void savePrefs() {
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("DogeAmount", etAmount.getText().toString());
+        editor.putInt("Currency", spCurrency.getSelectedItemPosition());
+        editor.commit();
     }
 
     private class LongOperation extends AsyncTask<String, Void, JSONObject> {
@@ -100,12 +115,13 @@ public class MainActivity extends Activity {
             try {
                 JSONObject data = result.getJSONObject("data");
                 JSONObject btc = data.getJSONObject("btc");
-                JSONObject usd = data.getJSONObject("usd");
+                JSONObject currency = data.getJSONObject(spCurrency.getSelectedItem().toString().toLowerCase());
 
-                float value = Float.parseFloat(usd.get("price").toString());
+                float value = Float.parseFloat(currency.get("price").toString());
                 float satoshis = Float.parseFloat(btc.get("rate").toString()) * 100000000;
 
-                String display = "$" + String.format("%.02f", value);
+                String display = CurrencySymbols[spCurrency.getSelectedItemPosition()] + String.format("%.02f", value);
+
                 String sat_display = String.format("%.00f", satoshis);
 
                 tvValue.setText(display);
