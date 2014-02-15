@@ -9,6 +9,8 @@ import android.widget.RemoteViews;
 
 public class DogeTrackWidgetProvider extends AppWidgetProvider {
 
+    public static final String ACTION_AMOUNT_UPDATED = "com.sli.dogetrack.AMOUNT_UPDATED";
+
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
 
@@ -26,6 +28,15 @@ public class DogeTrackWidgetProvider extends AppWidgetProvider {
 
             // Update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
+        }
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        if (intent.getAction().equals(ACTION_AMOUNT_UPDATED)) {
+            String dogeAmount = intent.getStringExtra("DogeAmount");
+            String satAmount = intent.getStringExtra("SatoshiAmount");
         }
     }
 

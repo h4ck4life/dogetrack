@@ -1,6 +1,7 @@
 package com.sli.dogetrack;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -108,6 +109,7 @@ public class MainActivity extends Activity {
                 JSONObject json = new JSONObject(JsonResponse);
                 return json;
             } catch (Exception ex) {
+                ex.printStackTrace();
             }
 
             return null;
@@ -123,6 +125,7 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(JSONObject result) {
             try {
+                // Grab the relevant data from the JSON result
                 JSONObject data = result.getJSONObject("data");
                 JSONObject btc = data.getJSONObject("btc");
                 JSONObject currency = data.getJSONObject(spCurrency.getSelectedItem().toString().toLowerCase());
@@ -130,17 +133,25 @@ public class MainActivity extends Activity {
                 float value = Float.parseFloat(currency.get("price").toString());
                 float satoshis = Float.parseFloat(btc.get("rate").toString()) * 100000000;
 
-                String display = CurrencySymbols[spCurrency.getSelectedItemPosition()] + String.format("%.02f", value);
+                String dogeDisplay = CurrencySymbols[spCurrency.getSelectedItemPosition()] + String.format("%.02f", value);
 
-                String sat_display = String.format("%.00f", satoshis);
+                String satDisplay = String.format("%.00f", satoshis);
 
-                tvValue.setText(display);
-                tvSatoshis.setText(sat_display + " " + getString(R.string.satoshis));
+                tvValue.setText(dogeDisplay);
+                tvSatoshis.setText(satDisplay + " " + getString(R.string.satoshis));
 
+                // Fire the an intent to update the widget
+                Intent i = new Intent(DogeTrackWidgetProvider.ACTION_AMOUNT_UPDATED);
+                i.putExtra("DogeAmount", dogeDisplay);
+                i.putExtra("SatoshiAmount", satDisplay);
+                getApplicationContext().sendBroadcast(i);
+
+                // Toggle visibilities
                 pbWorking.setVisibility(View.INVISIBLE);
                 tvValue.setVisibility(View.VISIBLE);
                 tvSatoshis.setVisibility(View.VISIBLE);
             } catch (JSONException ex) {
+                ex.printStackTrace();
             }
         }
 

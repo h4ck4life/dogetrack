@@ -26,9 +26,10 @@
         </activity>
     </application>
 
-    <receiver android:name="DogeTrackWidgetProvider">
+    <receiver android:name=".DogeTrackWidgetProvider">
         <intent-filter>
             <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            <action android:name="com.sli.dogetrack.ACTION_UPDATE_AMOUNT" />
         </intent-filter>
         <meta-data
             android:name="android.appwidget.provider"
