@@ -28,7 +28,9 @@ public class MainActivity extends Activity {
     private Button bUpdate;
     private ProgressBar pbWorking;
 
-    private static String[] CurrencySymbols = {"$", "£", "€"};
+    private static String[] CurrencySymbols = {"$", "£", "€", "฿", "Ł"};
+
+    public MainActivity() {}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +63,6 @@ public class MainActivity extends Activity {
         etAmount.setText(amount);
         spCurrency.setSelection(currency);
 
-        updateValue();
-
         bUpdate = (Button) findViewById(R.id.bUpdate);
         bUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +84,7 @@ public class MainActivity extends Activity {
         savePrefs();
     }
 
-    private void updateValue() {
+    public void updateValue() {
         try {
             new LongOperation().execute(ApiUrl + etAmount.getText().toString());
         } catch (Exception ex) {

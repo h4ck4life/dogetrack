@@ -32,6 +32,11 @@ public class DogeTrackWidgetProvider extends AppWidgetProvider {
     }
 
     @Override
+    public void onEnabled(Context context) {
+
+    }
+
+    @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         if (intent.getAction().equals(ACTION_AMOUNT_UPDATED)) {
